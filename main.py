@@ -6,14 +6,6 @@ import numpy as np
 import joblib
 import requests
 from sklearn.metrics.pairwise import cosine_similarity
-import google.generativeai as genai
-
-
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-api = os.getenv("API")
 
 app = FastAPI()
 
@@ -58,26 +50,15 @@ async def search_course(request: QueryRequest):
         used_model = ""
 
         try:
-            if api == "YOUR_API_KEY_HERE" or not api:
-                raise ValueError()
-            
-            genai.configure(api_key=api)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(prompt)
-            response_text = response.text
-            used_model = "Gemini"
-            
+            r = requests.post("http://localhost:11434/api/generate", json={
+                "model": "llama3.2",
+                "prompt": prompt,
+                "stream": False
+            })
+            response_text = r.json()["response"]
+            used_model = "Local Llama"
         except Exception:
-            try:
-                r = requests.post("http://localhost:11434/api/generate", json={
-                    "model": "llama3.2",
-                    "prompt": prompt,
-                    "stream": False
-                })
-                response_text = r.json()["response"]
-                used_model = "Local Llama"
-            except Exception:
-                response_text = "Error running models."
+            response_text = "Error running models."
 
         sources = new_df[["title", "number", "start", "end", "text"]].to_dict(orient="records")
 
