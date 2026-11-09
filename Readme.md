@@ -94,8 +94,6 @@ npm install
 npm run dev
 ```
 
-Once both servers are running, open the local development URL displayed by Next.js (usually `http://localhost:3000`) to start using SeeKr.
-
 ## Project Goal
 
 The idea behind SeeKr is simple: **finding knowledge inside educational videos should be as easy as searching for something on Google.**
